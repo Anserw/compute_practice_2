@@ -1,7 +1,6 @@
 // compute_practice_2.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 //带双步位移的QR方法
 #include<stdio.h>
 #include<stdlib.h>
@@ -10,6 +9,7 @@
 const double e = 1e-12;      //迭代的精度水平
 const int Max = 1000;   //迭代的最大次数
 
+//定义复数结构体
 typedef struct{
 	double Re;
 	double Im;
@@ -26,7 +26,7 @@ typedef struct{
 //void gauss(double lambda);  //高斯消元
 //void maxline(double **ptr, int n, int k);
 
-
+//初始化矩阵
 void initMat(double **& a)
 {
 	int i, j;
@@ -43,7 +43,7 @@ void initMat(double **& a)
 	}
 }
 
-
+//将矩阵中小于e的值全部赋值为0
 void zeroMat(double **a)
 {
 	int i, j;
@@ -100,6 +100,7 @@ void hessenbergMat(double **a)
 	}
 }
 
+//矩阵乘法
 void muiltiplyMat(double **a, double **b, double **c, int m)
 {	
 	for (int i = 0; i<m; i++) {
@@ -111,7 +112,7 @@ void muiltiplyMat(double **a, double **b, double **c, int m)
 	}
 }
 
-
+//输出矩阵
 int printMat(double **a)
 {
 	int i, j;
@@ -125,6 +126,7 @@ int printMat(double **a)
 	return 0;
 }
 
+//QR分解中的迭代运算
 void iterate(double **M, double **a, int m)
 {
 	int r, i, j;
@@ -334,6 +336,5 @@ int main()
 	zeroMat(a);
 	printMat(a);
 	QRmethod(a);
-	system("pause");
 	return 0;
 }
