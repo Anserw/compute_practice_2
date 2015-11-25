@@ -234,14 +234,14 @@ void gauss(double lambda)
 
 double inline sgn(double n)
 {
-	if (n > 0) {
-		return 1;
-	}
-	else if (n < 0) {
-		return -1;
-	}
-	else
-	    return 0;
+    if (n > 0) {
+        return 1;
+    }
+    else if (n < 0) {
+        return -1;
+    }
+    else
+        return 0;
 }
 
 //求Q、R和RQ
@@ -313,24 +313,24 @@ void QR_and_RQ(double **a)
 
     }
     zeroMat(R);
-	zeroMat(Q);
-	zeroMat(RQ);
-	printf("Q:\n");
+    zeroMat(Q);
+    zeroMat(RQ);
+    printf("Q:\n");
     printMat(Q);
-	printf("R:\n");
+    printf("R:\n");
     printMat(R);
     muiltiplyMat(R, Q, RQ, 10);
-	printf("RQ:\n");
+    printf("RQ:\n");
     printMat(RQ);
     for (i = 0; i < 10; i++)
         free(Q[i]);
-	free(Q);
+    free(Q);
     for (i = 0; i < 10; i++)
         free(R[i]);
-	free(R);
+    free(R);
     for (i = 0; i<10; i++)
         free(RQ[i]);
-	free(RQ);
+    free(RQ);
 } 
 
 //带双布位移的QR分解方法
@@ -436,7 +436,7 @@ int main()
     double **a;
     initMat(a);    
     hessenbergMat(a);    
-	QR_and_RQ(a);
+    QR_and_RQ(a);
     QRmethod(a);
     return 0;
 }
