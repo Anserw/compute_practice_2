@@ -100,9 +100,9 @@ void hessenbergMat(double **a)
             }
         }
     }
-	printf("A(n-1)\n");
-	zeroMat(a);
-	printMat(a);
+    printf("A(n-1)\n");
+    zeroMat(a);
+    printMat(a);
 }
 
 //矩阵乘法
@@ -212,16 +212,16 @@ void gauss(double lambda)
     }
 
     X[n - 1] = 1;    
-	t = 0;
+    t = 0;
     for (k = n - 2; k >= 0; k--) {
         sigma = 0;
         for (j = k + 1; j<n; j++)
             sigma += a[k][j] * X[j];
         X[k] = (a[k][n] - sigma) / a[k][k];
     }
-	for (i = 0; i<n; i++)
-		t += X[i] * X[i];
-	t = sqrt(t);
+    for (i = 0; i<n; i++)
+        t += X[i] * X[i];
+    t = sqrt(t);
     printf("eigenvector = ( ");
     for (i = 0; i<n; i++)
         printf("%.12e ", X[i]/t);
@@ -230,6 +230,98 @@ void gauss(double lambda)
         free(a[i]);
     free(a);
     free(X);
+}
+
+double inline sgn(double n)
+{
+	if (n > 0) {
+		return 1;
+	}
+	else if (n < 0) {
+		return -1;
+	}
+	else
+	    return 0;
+}
+
+//求Q、R和RQ
+void QR_and_RQ(double **a)
+{
+    int i, j, r;
+    double c, d, h, w[10], p[10], u[10];
+    double **Q, **R, **RQ;
+    Q = (double **)malloc(10 * sizeof(double *));
+    for (i = 0; i < 10; i++)
+        Q[i] = (double *)malloc(11 * sizeof(double));
+    R = (double **)malloc(10 * sizeof(double *));
+    for (i = 0; i < 10; i++)
+        R[i] = (double *)malloc(11 * sizeof(double));
+    RQ = (double **)malloc(10 * sizeof(double *));
+    for (i = 0; i<10; i++)
+        RQ[i] = (double *)malloc(11 * sizeof(double));
+    for(i = 0; i < 10; i++) {
+        for(j = 0; j < 10; j++){
+            if(i == j)
+                Q[i][i] = 1;
+            else
+                Q[i][j] = 0;
+        }
+    }
+    for(i = 0; i < 10; i++) {
+        for(j = 0; j < 10; j++)
+            R[i][j] = a[i][j];
+    }
+    zeroMat(R);
+    for(r = 0; r < 9; r++){
+        d = 0;
+        for(i = r + 1; i < 10; i++)
+            d += R[i][r] * R[i][r];
+        if(fabs(d) == 0)
+            continue;
+        else {
+            d += R[r][r] * R[r][r];
+            d = sqrt(d);
+            if (R[r][r] == 0)
+                c = d;
+            else
+                c = -sgn(R[r][r]) * d;
+            h = c * c - c * R[r][r];
+            for(i = 0; i < r; i++)
+                u[i] = 0;
+            u[r] = R[r][r] - c;
+            for(i = r + 1; i < 10; i++)
+                u[i] = R[i][r];
+            for(i = 0; i < 10; i++) {
+                w[i] = 0;
+                for(j = 0; j < 10; j++)
+                    w[i] += Q[i][j] * u[j];
+            }
+            for(i = 0; i < 10; i++) {
+                for(j = 0; j < 10; j++)
+                    Q[i][j] -= w[i] * u[j] / h;
+            }
+            for(i = 0; i < 10; i++){
+                p[i] = 0;
+                for(j = 0; j < 10; j ++ )
+                    p[i] += R[j][i] * u[j] / h;
+            }
+            for(i = 0; i < 10; i++){
+                for(j = 0; j < 10; j++)
+                    R[i][j] -= u[i] * p[j];
+            }
+        }
+
+    }
+    zeroMat(R);
+	zeroMat(Q);
+	zeroMat(RQ);
+	printf("Q:\n");
+    printMat(Q);
+	printf("R:\n");
+    printMat(R);
+    muiltiplyMat(R, Q, RQ, 10);
+	printf("RQ:\n");
+    printMat(RQ);
 }
 
 //带双布位移的QR分解方法
@@ -311,11 +403,11 @@ void QRmethod(double **a)
         }
     }
     zeroMat(a);
-	printf("after QR method\n");
+    printf("after QR method\n");
     printMat(a);
     
     for (int r = 0; r<10; r++) {
-		printf("\n");
+        printf("\n");
         if (L[r].Im == 0) {
             printf("lambda[%d] = (%.12e + i*%.12e)\n", r + 1, L[r].Re, L[r].Im);
             gauss(L[r].Re);
@@ -331,6 +423,7 @@ int main()
     double **a;
     initMat(a);    
     hessenbergMat(a);    
+	QR_and_RQ(a);
     QRmethod(a);
     return 0;
 }
